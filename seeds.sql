@@ -5,47 +5,35 @@ USE employeesDB;
 INSERT INTO department
     (name)
 VALUES
-    ("Administration"),
-    ("Human Resources"),
-    ("Accounting"),
-    ("Promotion"),
+    ("Sales"),
+    ("Legal"),
+    ("Finance"),
     ("Engineering");
 
 INSERT INTO role
     (title,salary,department_id)
 VALUES
-    ("CEO", 1000, 1),
-    ("Secretary", 150, 1),
-    ("HR Representative", 90, 2),
-    ("Staff Recruiter", 70, 2),
-    ("Accountant", 70, 3),
-    ("Financial Analyst", 85, 3),
-    ("Representative", 60, 4),
-    ("Salesman", 50, 4),
-    ("Analyst", 80, 5),
-    ("Engineer", 100, 5);
+    ("Sales Lead", 100, 1),
+    ("Sales Person", 80, 1),
+    ("Legal Team Leader", 250, 2),
+    ("Lawyer", 190, 2),
+    ("Finance Leader", 150, 3),
+    ("Accountant", 125, 3),
+    ("Lead Engineer", 150, 4),
+    ("Software Engineer", 120, 4);
+
+
 
 INSERT INTO employee
     (first_name,last_name,role_id,manager_id)
 VALUES
-    ("James", "Smith", 1),
+    ("James", "Smith", 1, null),
     ("Patricia", "Johnson", 2, 1),
-    ("Robert", "Williams", 2, 1),
-    ("Linda", "Brown", 3, 2),
-    ("Michael", "Jones", 3, 2),
-    ("Barbara", "Garcia", 4, 3),
-    ("Richard", "Miller", 4, 3),
-    ("Susan", "Davis", 4, 4),
-    ("Joseph", "Rodriguez", 5, 5),
-    ("Thomas", "Martinez", 5, 5),
-    ("Karen", "Lopez", 5, 6),
-    ("Dorothy", "Wilson", 4, 4),
-    ("Brandon", "Moore", 5, 6),
-    ("Keith", "Harris", 4, 3),
-    ("Frances", "Thompson", 4, 4),
-    ("Kyle", "Martin", 5, 5),
-    ("Judith", "Torres", 5, 5),
-    ("Zachary", "Hill", 5, 6),
-    ("Christina", "Flores", 4, 4),
-    ("Jeremy", "Adams", 5, 6);
+    ("Robert", "Williams", 3, null),
+    ("Linda", "Brown", 4, 3),
+    ("Michael", "Jones", 5, null),
+    ("Barbara", "Garcia", 6, 5),
+    ("Richard", "Miller", 7, null),
+    ("Susan", "Davis", 8, 7);
 
+   

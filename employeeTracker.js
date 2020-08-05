@@ -163,11 +163,14 @@ function viewRole() {
 }
 
 function viewEmployees() {
-  connection.query("SELECT * FROM employee", function (err, res) {
-    if (err) throw err;
-    console.table(res);
-    start();
-  });
+  connection.query(
+    "SELECT  employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department, CONCAT(manager.first_name,' ', manager.last_name) AS manager FROM employee  LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department on role.department_id = department.id  LEFT JOIN employee manager ON employee.manager_id = manager.id",
+    function (err, res) {
+      if (err) throw err;
+      console.table(res);
+      start();
+    }
+  );
 }
 
 function viewEmpByMng() {
@@ -190,6 +193,109 @@ function viewEmpByMng() {
     });
 }
 
+function viewBudget() {}
+
+function addDep() {
+  inquirer
+    .prompt({
+      message: "Type a new department name",
+      type: "type",
+      name: "name",
+    })
+    .then((res) => {
+      connection.query(
+        "INSERT INTO department SET ?",
+        { name: res.name },
+        function (err, res) {
+          if (err) throw err;
+          console.log(
+            "-*-*- New department is added to ID #" + res.insertId + "  -*-*-\n"
+          );
+          start();
+        }
+      );
+    });
+}
+
+function addRole() {
+  const questions = [
+    {
+      message: "Type a new title name",
+      type: "type",
+      name: "title",
+    },
+    {
+      message: "What is the salary for this role?",
+      type: "type",
+      name: "salary",
+    },
+    {
+      message: "Type a department ID for this role",
+      type: "type",
+      name: "department_id",
+    },
+  ];
+  inquirer.prompt(questions).then((res) => {
+    console.log(res);
+    connection.query(
+      "INSERT INTO role SET ?",
+      {
+        title: res.title,
+        salary: res.salary,
+        department_id: res.department_id,
+      },
+      function (err, res) {
+        if (err) throw err;
+        console.log("-*-*- New role is added -*-*-\n");
+        start();
+      }
+    );
+  });
+}
+
+function addEmp() {
+  const questions = [
+    {
+      message: "Fisrt name?",
+      type: "type",
+      name: "first_name",
+    },
+    {
+      message: "Last name?",
+      type: "type",
+      name: "last_name",
+    },
+    {
+      message: "New employee's role ID#?",
+      type: "type",
+      name: "role_id",
+    },
+    {
+      message: "New employee's manager ID#?",
+      type: "type",
+      name: "manager_id",
+    },
+  ];
+  inquirer.prompt(questions).then((res) => {
+    console.log(res);
+    connection.query(
+      "INSERT INTO employee SET ?",
+      {
+        first_name: res.first_name,
+        last_name: res.last_name,
+        role_id: res.role_id,
+        manager_id: res.manager_id,
+      },
+      function (err, res) {
+        if (err) throw err;
+        console.log("-*-*- New employee is added -*-*-\n");
+        start();
+      }
+    );
+  });
+}
+
+//exit=====================================
 function exit() {
   console.log("-*-*- Connection End (;´༎ຶٹ༎ຶ`) -*-*-\n");
   connection.end();
