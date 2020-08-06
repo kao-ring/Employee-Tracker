@@ -43,7 +43,7 @@ function start() {
               ],
             })
             .then((res) => {
-              console.log(res);
+              // console.log(res);
               switch (res.view) {
                 case "Departments List":
                   viewDep();
@@ -93,50 +93,12 @@ function start() {
           break;
 
         case "Update":
-          inquirer
-            .prompt({
-              message: "What would you like to update?",
-              type: "list",
-              name: "update",
-              choices: ["Employee's Role", "Employee's Manager"],
-            })
-            .then((res) => {
-              switch (res.update) {
-                case "Employee Roles":
-                  updEmpRole();
-                  break;
-                case "Employee Managers":
-                  updEmpMng();
-                  break;
-                default:
-                  break;
-              }
-            });
+          update();
+
           break;
 
         case "Delete":
-          inquirer
-            .prompt({
-              message: "What would you like to delete?",
-              type: "list",
-              name: "delete",
-              choices: ["Department", "Role", "Employee"],
-            })
-            .then((res) => {
-              switch (res.delete) {
-                case "Delete Department":
-                  dltDep();
-                  break;
-                case "Delete Role":
-                  dltRole();
-                  break;
-                case "Delete Employee":
-                  dltEmp();
-                  break;
-                default:
-                  break;
-              }
-            });
+          dlt();
           break;
 
         case "Exit":
@@ -167,7 +129,7 @@ function viewRole() {
 
 function viewEmployees() {
   connection.query(
-    "SELECT  employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department, CONCAT(manager.first_name,' ', manager.last_name) AS manager FROM employee  LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department on role.department_id = department.id  LEFT JOIN employee manager ON employee.manager_id = manager.id",
+    "SELECT  employee.id, CONCAT(employee.first_name,' ', employee.last_name) AS employee_name, role.title, role.salary, department.name AS department, CONCAT(manager.first_name,' ', manager.last_name) AS manager FROM employee  LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department on role.department_id = department.id  LEFT JOIN employee manager ON employee.manager_id = manager.id",
     function (err, res) {
       if (err) throw err;
       console.table(res);
@@ -197,9 +159,9 @@ function viewEmpByMng() {
         choices: mngArray,
       })
       .then((res) => {
-        console.table(res);
+        // console.table(res);
         connection.query(
-          ` SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department, CONCAT(manager.first_name,' ', manager.last_name) AS manager FROM employee  LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department on role.department_id = department.id  LEFT JOIN employee manager ON employee.manager_id = manager.id
+          ` SELECT CONCAT(manager.first_name,' ', manager.last_name) AS manager, employee.id, CONCAT(employee.first_name,' ', employee.last_name) AS employee_name, role.title, role.salary, department.name AS department FROM employee  LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department on role.department_id = department.id  LEFT JOIN employee manager ON employee.manager_id = manager.id
           WHERE employee.manager_id = ${res.mng}`,
           function (err, res) {
             if (err) throw err;
@@ -229,9 +191,9 @@ function viewEmpByDep() {
         choices: depArray,
       })
       .then((res) => {
-        console.table(res);
+        // console.table(res);
         connection.query(
-          `SELECT employee.id, employee.first_name, employee.last_name, role.title FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department department on role.department_id = department.id WHERE department.id = ${res.dep};`,
+          `SELECT department.name AS Department, employee.id, CONCAT(employee.first_name,' ', employee.last_name) AS employee_name, role.title AS Role FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department department on role.department_id = department.id WHERE department.id = ${res.dep};`,
           function (err, res) {
             if (err) throw err;
             console.table(res);
@@ -377,16 +339,15 @@ async function addEmp() {
   });
 }
 
-async function updEmpRole() {
-  const empArray = [];
-  const resEmp = await connection.queryAsync(
+async function update() {
+  const mngArray = [];
+  const resMng = await connection.queryAsync(
     "SELECT  first_name, last_name, id FROM employee"
   );
-  for (var i = 0; i < resEmp.length; i++) {
-    empArray.push({
-      first_name: resEmp[i].first_name,
-      last_name: resEmp[i].last_name,
-      value: resEmp[i].id,
+  for (var i = 0; i < resMng.length; i++) {
+    mngArray.push({
+      name: resMng[i].first_name + " " + resMng[i].last_name,
+      value: resMng[i].id,
     });
   }
 
@@ -404,15 +365,180 @@ async function updEmpRole() {
       message: "Who would you like to update?",
       type: "list",
       name: "emp",
-      choices: empArray,
+      choices: mngArray,
     },
     {
-      message: "What is this employee's new role?",
+      message: "What would you like to change?",
       type: "list",
       name: "role",
-      choices: roleArray,
+      choices: ["This employee's Manger", "This employee's Role"],
     },
   ];
+
+  inquirer.prompt(questions).then((res) => {
+    var empID = res.emp; //Selected employee's ID is HERE!!!!!
+
+    if (res.role === "This employee's Manger") {
+      inquirer
+        .prompt({
+          message: "Who would be a new manager?",
+          type: "list",
+          name: "emp",
+          choices: mngArray,
+        })
+        .then((res) => {
+          connection.query(
+            "UPDATE employee SET ? WHERE ?",
+            [{ manager_id: res.emp }, { id: empID }],
+            function (err, res) {
+              if (err) throw err;
+              console.log("-*-*- Manager changed -*-*-\n");
+              start();
+            }
+          );
+        });
+    } else if (res.role === "This employee's Role") {
+      inquirer
+        .prompt({
+          message: "What is new role?",
+          type: "list",
+          name: "role",
+          choices: roleArray,
+        })
+        .then((res) => {
+          // console.log(res);
+          connection.query(
+            "UPDATE employee SET ? WHERE ?",
+            [{ role_id: res.role }, { id: empID }],
+            function (err, res) {
+              if (err) throw err;
+              console.log("-*-*- Role changed -*-*-\n");
+              start();
+            }
+          );
+        });
+    }
+  });
+}
+
+async function dlt() {
+  //employee list
+  const mngArray = [];
+  const resMng = await connection.queryAsync(
+    "SELECT first_name, last_name, id FROM employee"
+  );
+  for (var i = 0; i < resMng.length; i++) {
+    mngArray.push({
+      name: resMng[i].first_name + " " + resMng[i].last_name,
+      value: resMng[i].id,
+    });
+  }
+  //roll list
+  const roleArray = [];
+  const resRole = await connection.queryAsync("SELECT  title, id FROM role");
+  for (var i = 0; i < resRole.length; i++) {
+    roleArray.push({
+      name: resRole[i].title,
+      value: resRole[i].id,
+    });
+  }
+
+  //department list
+  const depArray = [];
+  const resDep = await connection.queryAsync("SELECT name, id FROM department");
+  for (var i = 0; i < resDep.length; i++) {
+    depArray.push({
+      name: resDep[i].name,
+      value: resDep[i].id,
+    });
+  }
+
+  //what to delete?
+  inquirer
+    .prompt({
+      message: "What would you like to delete?",
+      type: "list",
+      name: "delete",
+      choices: ["Department", "Role", "Employee"],
+    })
+    .then((res) => {
+      switch (res.delete) {
+        case "Department":
+          dltDep();
+          break;
+        case "Role":
+          dltRole();
+          break;
+        case "Employee":
+          dltEmp();
+          break;
+        default:
+          break;
+      }
+    });
+
+  //delete function library...
+  function dltDep() {
+    inquirer
+      .prompt({
+        message: "Which department would you like to delete?",
+        type: "list",
+        name: "dlt",
+        choices: depArray,
+      })
+      .then((res) => {
+        connection.query(
+          "DELETE FROM department WHERE ?",
+          { id: res.dlt },
+          function (err, res) {
+            if (err) throw err;
+            console.log("-*-*- Delete department success! -*-*-\n");
+            start();
+          }
+        );
+      });
+  }
+
+  function dltRole() {
+    inquirer
+      .prompt({
+        message: "Which role would you like to delete?",
+        type: "list",
+        name: "dlt",
+        choices: roleArray,
+      })
+      .then((res) => {
+        connection.query("DELETE FROM role WHERE ?", { id: res.dlt }, function (
+          err,
+          res
+        ) {
+          if (err) throw err;
+          console.log("-*-*- Delete role success! -*-*-");
+          start();
+        });
+      });
+  }
+
+  function dltEmp() {
+    inquirer
+      .prompt({
+        message: "Who would you like to delete?",
+        type: "list",
+        name: "dlt",
+        choices: mngArray,
+      })
+      .then((res) => {
+        connection.query(
+          "DELETE FROM employee WHERE ?",
+          { id: res.dlt },
+          function (err, res) {
+            if (err) throw err;
+            console.log("-*-*- Delete employee success! -*-*-");
+            start();
+          }
+        );
+      });
+  }
 }
 
 //exit=====================================
