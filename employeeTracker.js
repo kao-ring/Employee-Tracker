@@ -13,6 +13,28 @@ var connection = mysql.createConnection({
 
 connection.connect((err) => {
   if (err) throw err;
+  console.log(
+    "\x1b[31m",
+    "\x1b[40m",
+    `
+
+
+    .########.##.....##.########..##........#######..##....##.########.########...
+    .##.......###...###.##.....##.##.......##.....##..##..##..##.......##.........
+    .##.......####.####.##.....##.##.......##.....##...####...##.......##.........
+    .######...##.###.##.########..##.......##.....##....##....######...######.....
+    .##.......##.....##.##........##.......##.....##....##....##.......##.........
+    .##.......##.....##.##........##.......##.....##....##....##.......##.........
+    .########.##.....##.##........########..#######.....##....########.########...
+    .########.########.....###.....######..##....##.########.########.            
+    ....##....##.....##...##.##...##....##.##...##..##.......##.....##            
+    ....##....##.....##..##...##..##.......##..##...##.......##.....##            
+    ....##....########..##.....##.##.......#####....######...########.            
+    ....##....##...##...#########.##.......##..##...##.......##...##..            
+    ....##....##....##..##.....##.##....##.##...##..##.......##....##.            
+    ....##....##.....##.##.....##..######..##....##.########.##.....##                                                                                      
+    `
+  );
   start();
 });
 
@@ -112,19 +134,25 @@ function start() {
 }
 
 function viewDep() {
-  connection.query("SELECT * FROM department", function (err, res) {
-    if (err) throw err;
-    console.table(res);
-    start();
-  });
+  connection.query(
+    "SELECT department.name AS Department, SUM(role.salary) AS Total_Budget FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id GROUP BY department.name",
+    function (err, res) {
+      if (err) throw err;
+      console.table(res);
+      start();
+    }
+  );
 }
 
 function viewRole() {
-  connection.query("SELECT * FROM role", function (err, res) {
-    if (err) throw err;
-    console.table(res);
-    start();
-  });
+  connection.query(
+    "SELECT role.id, role.title, role.salary, department.name AS department FROM role LEFT JOIN department on role.department_id = department.id;",
+    function (err, res) {
+      if (err) throw err;
+      console.table(res);
+      start();
+    }
+  );
 }
 
 function viewEmployees() {
