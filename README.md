@@ -1,52 +1,6 @@
-# Employee Tracker
+# Employee-Tracker
 
-Developers are often tasked with creating interfaces that make it easy for non-developers to view and interact with information stored in databases. Often these interfaces are known as **C**ontent **M**anagement **S**ystems. In this homework assignment, your challenge is to architect and build a solution for managing a company's employees using node, inquirer, and MySQL.
-
-## Instructions
-
-Design the following database schema containing three tables:
-
-![Database Schema](Assets/schema.png)
-
-- **department**:
-
-  - **id** - INT PRIMARY KEY
-  - **name** - VARCHAR(30) to hold department name
-
-- **role**:
-
-  - **id** - INT PRIMARY KEY
-  - **title** - VARCHAR(30) to hold role title
-  - **salary** - DECIMAL to hold role salary
-  - **department_id** - INT to hold reference to department role belongs to
-
-- **employee**:
-
-  - **id** - INT PRIMARY KEY
-  - **first_name** - VARCHAR(30) to hold employee first name
-  - **last_name** - VARCHAR(30) to hold employee last name
-  - **role_id** - INT to hold reference to role employee has
-  - **manager_id** - INT to hold reference to another employee that manager of the current employee. This field may be null if the employee has no manager
-
-Build a command-line application that at a minimum allows the user to:
-
-- Add departments, roles, employees
-
-- View departments, roles, employees
-
-- Update employee roles
-
-Bonus points if you're able to:
-
-- Update employee managers
-
-- View employees by manager
-
-- Delete departments, roles, and employees
-
-- View the total utilized budget of a department -- ie the combined salaries of all employees in that department
-
-We can frame this challenge as follows:
+**Description:** This is a CLI for managing a company's employees using node, inquirer, and MySQL.
 
 ```
 As a business owner
@@ -54,86 +8,51 @@ I want to be able to view and manage the departments, roles, and employees in my
 So that I can organize and plan my business
 ```
 
-How do you deliver this? Here are some guidelines:
+![](https://img.shields.io/github/license/kao-ring/Employee-Tracker?style=plastic&logo=appveyor)
 
-- Use the [MySQL](https://www.npmjs.com/package/mysql) NPM package to connect to your MySQL database and perform queries.
+## Table of Contents
 
-- Use [InquirerJs](https://www.npmjs.com/package/inquirer/v/0.2.3) NPM package to interact with the user via the command-line.
+- [Screen Shot & Video](#screen-shot-&-Video)
+- [Installation](#installation)
+- [Usage](#usage)
+- [License](#license)
+- [Questions](#questions)
 
-- Use [console.table](https://www.npmjs.com/package/console.table) to print MySQL rows to the console. There is a built-in version of `console.table`, but the NPM package formats the data a little better for our purposes.
+## Screen Shot & Video
 
-- You may wish to have a separate file containing functions for performing specific SQL queries you'll need to use. Could a constructor function or a class be helpful for organizing these?
+**YouTube Link** : https://youtu.be/Z2D-PwOnHo4
 
-- You will need to perform a variety of SQL JOINS to complete this assignment, and it's recommended you review the week's activities if you need a refresher on this.
+![Screen Shot 2020-08-06 at 12 48 58 AM](https://user-images.githubusercontent.com/66850293/89492058-adcd8580-d77e-11ea-8c15-5af17d183c9d.png)
 
-![Employee Tracker](Assets/employee-tracker.gif)
+## Installation
 
-### Hints
+Install npm modules first, and then copy sql files to MySQL Workbench.
 
-- You may wish to include a `seed.sql` file to pre-populate your database. This will make development of individual features much easier.
+## Usage
 
-- Focus on getting the basic functionality completed before working on more advanced features.
+When you run employeeTracker.js, you will see title screen and menu list.
 
-- Review the week's activities for a refresher on MySQL.
+In the View menu, you'll have All Employees, Employees by Manager,Employees by Department, Departments List and Roles List. On the
+All Employees, it's a mix of three tables. On the Department list, you can see the total utilized budget of a department -- ie the combined salaries of all employees in that department.
 
-- Check out [SQL Bolt](https://sqlbolt.com/) for some extra MySQL help.
+In the Add menu, you can simply add Department, Roles and Employees.
 
-## Minimum Requirements
+In the Update menu, you choose employee's name first and then you can edit either their manager or role.
 
-- Functional application.
+In the Delete menu, simply scratch department, role and employees.
 
-- GitHub repository with a unique name and a README describing the project.
+If you want to stop this application, just choose Exit to terminate the connection.
 
-- The command-line application should allow users to:
+## License
 
-  - Add departments, roles, employees
+This project is licensed under the [MIT](./LICENSE).
 
-  - View departments, roles, employees
+## Questions
 
-  - Update employee roles
+For any questions, please connect with me:
 
-## Bonus
+- E-mail: <kao.ring@yahoo.com>
 
-- The command-line application should allow users to:
+- Github: https://github.com/kao-ring
 
-  - Update employee managers
-
-  - View employees by manager
-
-  - Delete departments, roles, and employees
-
-  - View the total utilized budget of a department -- ie the combined salaries of all employees in that department
-
-## Commit Early and Often
-
-One of the most important skills to master as a web developer is version control. Building the habit of committing via Git is important for two reasons:
-
-- Your commit history is a signal to employers that you are actively working on projects and learning new skills.
-
-- Your commit history allows you to revert your codebase in the event that you need to return to a previous state.
-
-Follow these guidelines for committing:
-
-- Make single-purpose commits for related changes to ensure a clean, manageable history. If you are fixing two issues, make two commits.
-
-- Write descriptive, meaningful commit messages so that you and anyone else looking at your repository can easily understand its history.
-
-- Don't commit half-done work, for the sake of your collaborators (and your future self!).
-
-- Test your application before you commit to ensure functionality at every step in the development process.
-
-We would like you to have well over 200 commits by graduation, so commit early and often!
-
-## Submission on BCS
-
-You are required to submit the following:
-
-- The URL of the GitHub repository
-
-- A video demonstrating the entirety of the app's functionality
-
----
-
-© 2019 Trilogy Education Services, a 2U, Inc. brand. All Rights Reserved.
-
-# Employee-Tracker
+- LinkedIn: https://www.linkedin.com/in/kaori-nakajima
